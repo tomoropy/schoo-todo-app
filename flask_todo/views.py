@@ -1,6 +1,6 @@
 from flask import Blueprint, request, render_template, redirect, url_for, flash
 from flask_login import login_user, login_required, logout_user, current_user
-from flask_todo.models import User #, Task    ←(Task実装時にコメントアウトを外してください)
+from flask_todo.models import User, Task   # ←(Task実装時にコメントアウトを外してください)
 from datetime import datetime, date
 from flask_todo import db
 import re
@@ -93,6 +93,114 @@ def login():
             login_user(user)
             next = request.args.get('next')
             if not next:
-                next = url_for('todo_app.user')
+                next = url_for('todo_app.task')
             return redirect(next)
     return render_template('login.html', last_access=datetime.now())
+
+# タスク一覧
+@bp.route('/task', methods=['GET', 'POST'])
+# ログインできている時に処理を実行できる
+@login_required
+def task():
+    if request.method == 'GET':
+        # 現在ログインしている人のタスクをタスク終了日が早い順に全て取得する
+        tasks = Task.query.filter(Task.user_id == current_user.get_id()).order_by(Task.end_time).all()
+    return render_template('task.html',tasks=tasks, today=date.today())
+
+# 新規タスク作成
+@bp.route('/create_task', methods=['GET', 'POST'])
+# ログインできている時に処理を実行できる
+@login_required
+def create_task():
+    # POSTリクエストの場合
+    if request.method == 'POST':
+        # 書き込まれた項目を取得する
+        title = request.form.get('title')
+        detail = request.form.get('detail')
+        end_time = datetime.strptime(request.form.get('end_time'), '%Y-%m-%d')
+        # どこかに空欄がある場合
+        if title == '' or detail =='' or end_time == '':
+            flash('空のフォームがあります')
+                # 全て正しく入力された場合
+        else:
+            # 取得した項目をデータベースのカラム名に紐付ける
+            create_task = Task(
+                title = title,
+                end_time = end_time,
+                detail = detail,
+                user_id = current_user.get_id()
+                )
+            # データベースへの書き込み（Create処理）
+            try:
+                with db.session.begin(subtransactions=True):
+                    db.session.add(create_task)
+                db.session.commit()
+            except:
+                db.session.rollback()
+                raise
+            finally:
+                db.session.close()
+            return redirect(url_for('todo_app.user'))
+    return render_template('create_task.html')
+
+# タスク詳細
+@bp.route('/detail/<int:id>')
+# ログインできている時に処理を実行できる
+@login_required
+def detail_task(id):
+    # 選択したタスクの情報を取得（Read処理）
+    task = Task.query.get(id)
+    return render_template('detail.html', task=task, today=date.today())
+
+# タスク削除
+@bp.route('/delete/<int:id>')
+# ログインできている時に処理を実行できる
+@login_required
+def delete_task(id):
+    # 選択したタスクの情報を取得
+    task = Task.query.get(id)
+
+    # データベースへの書き込み（Delete処理）
+    try:
+        with db.session.begin(subtransactions=True):
+            db.session.delete(task)
+        db.session.commit()
+    except:
+        db.session.rollback()
+        raise
+    finally:
+        db.session.close()
+
+    return redirect(url_for('todo_app.task'))
+
+# タスク更新
+@bp.route('/update/<int:id>', methods=['GET', 'POST'])
+# ログインできている時に処理を実行できる
+@login_required
+def update_task(id):
+    # 選択したタスクの情報を取得
+    task = Task.query.get(id)
+
+    # GETリクエストの場合
+    if request.method == 'GET':
+        return render_template('update.html', task=task, today=date.today())
+    # POSTリクエストの場合
+    else:
+        task.title = request.form.get('title')
+        task.end_time = datetime.strptime(request.form.get('end_time'), '%Y-%m-%d')
+        task.detail = request.form.get('detail')
+        update_task = Task(
+            title = task.title,
+            end_time = task.end_time,
+            detail = task.detail
+            )
+       # データベースへの書き込み（Update処理）
+        try:
+            db.session.commit()
+        except:
+            db.session.rollback()
+            raise
+        finally:
+            db.session.close()
+
+        return redirect(url_for('todo_app.task'))

@@ -1,0 +1,32 @@
+{% from "_formhelpers.html" import render_field %}
+{% extends 'base.html' %}
+
+{% block title %}タスク一覧画面{% endblock %}
+
+{% block content %}
+<main>
+    <div class="container w-75">
+        <a href="/create_task" role="button" class="btn btn-primary mb-5 w-25">新規作成</a>
+        <div class="d-grid gap-3">
+            {% for task in tasks %}
+            <div class="container d-flex flex-row border-bottom">
+                <div class='w-75'>
+                    <h2 class="">{{ task.title }}</h2>
+                    <p>期限：{{ task.end_time.date() }}</p>
+                    {% if task.end_time.date() < today %}
+                    <button class="btn btn-danger w-100">
+                        期限切れです！
+                    </button>
+                    {% endif %}
+                </div>
+                <div class="w-25 justify-content-end m-auto">
+                    <a href="/detail/{{ task.id }}" role="button" class="btn btn-outline-secondary">詳細</a>
+                    <a href="/update/{{ task.id }}" role="button" class="btn btn-outline-secondary">編集</a>
+                    <a href="/delete/{{ task.id }}" role="button" class="btn btn-primary">完了</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</main>
+{% endblock content %}

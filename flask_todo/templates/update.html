@@ -1,0 +1,22 @@
+{% from "_formhelpers.html" import render_field %}
+{% extends 'base.html' %}
+{% block title %}タスク更新画面{% endblock %}
+{% block content %}
+<main>
+<div class="container w-50">
+    {% if task.end_time.date() < today %}
+    <div class="btn btn-danger w-100 mb-5">期限切れです！</div>
+    {% endif %}
+    <form action="/update/{{ task.id }}" method="POST">
+        <label for="title" class="form-label">タイトル</label>
+        <input type="text"  class="form-control mb-3" name="title" aria-describedby="title-help" value={{ task.title }}>
+        <label for="detail" class="form-label">詳細</label>
+        <textarea name="detail" class="form-control mb-3"  id="" rows="5">{{ task.detail }}</textarea>
+        <label for="due" class="form-label">日付</label>
+        <input type="date"  class="form-control mb-5" name="end_time" value={{ task.end_time.date() }} required>
+        <button type="submit" class="btn btn-primary form-control w-25">更新</button>
+        <a href="/user" role="button" class="btn btn-outline-secondary">戻る</a>
+    </form>
+</div>
+</main>
+{% endblock content %}
