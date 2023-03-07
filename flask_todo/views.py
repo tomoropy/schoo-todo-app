@@ -140,7 +140,7 @@ def create_task():
                 raise
             finally:
                 db.session.close()
-            return redirect(url_for('todo_app.user'))
+            return redirect(url_for('todo_app.task'))
     return render_template('create_task.html')
 
 # タスク詳細
