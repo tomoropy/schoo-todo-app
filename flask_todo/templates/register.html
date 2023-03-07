@@ -1,0 +1,21 @@
+{% from "_formhelpers.html" import render_field %}
+{% extends 'base.html'%}
+
+{% block title %}ユーザー情報登録画面{% endblock %}
+{% block content %}
+<main>
+  <div style="height: 200px"></div>
+  <div class="container text-center w-50">
+    <h1 class="fs-4 fw-bold mb-5">新規ユーザー登録</h1>
+    <form method="post">
+        <input type="text" placeholder="Name" name="name" class="form-control mb-2">
+        <input type="text" placeholder="Email" name="email"class="form-control mb-2">
+        <input type="password" placeholder="Password" name="password1"class="form-control mb-2">
+        <input type="password" placeholder="Password Confirmation" name="password2"class="form-control mb-5">
+      <div>
+          <button class="btn btn-primary w-25">登録</button>
+      </div>
+    </form>
+  </div>
+</main>
+{% endblock content %}

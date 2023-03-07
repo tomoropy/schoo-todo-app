@@ -1,0 +1,18 @@
+{% from "_formhelpers.html" import render_field %}
+{% extends 'base.html' %}
+
+{% block title %}ログイン{% endblock %}
+
+{% block content %}
+<main>
+    <div style="height: 200px"></div>
+    <div class="container text-center w-50">
+        <h2 class="fs-4 mb-5 fw-bold">ログイン画面</h2>
+        <form method="POST">
+            <input type="text" placeholder="Email" name="email" class="form-control w-75 mb-2 mx-auto">
+            <input type="password" placeholder="Password" name="password" class="form-control w-75 mb-5 mx-auto">
+            <button class="btn btn-primary from-control w-25">ログイン</button>
+        </form>
+    </div>
+</main>
+{% endblock content %}
