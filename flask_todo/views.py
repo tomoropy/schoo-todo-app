@@ -93,6 +93,6 @@ def login():
             login_user(user)
             next = request.args.get('next')
             if not next:
-                next = url_for('todo_app.user')
+                next = url_for('todo_app.task')
             return redirect(next)
     return render_template('login.html', last_access=datetime.now())
