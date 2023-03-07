@@ -19,7 +19,7 @@
           <li class="nav-item"><a class="nav-link fw-bold text-dark" href="{{url_for('todo_app.home')}}">Home</a> </li>
           {% if current_user.is_authenticated %}
           <!-- Task実装時にコメントアウトを外してください -->
-          <!-- <li class="nav-item"><a class="nav-link fw-bold text-dark" href="{{ url_for('todo_app.user') }}">タスク一覧</a></li> -->
+          <!-- <li class="nav-item"><a class="nav-link fw-bold text-dark" href="{{ url_for('todo_app.task') }}">タスク一覧</a></li> -->
           <li class="nav-item"><a class="nav-link btn btn-outline-primary" href="{{ url_for('todo_app.logout') }}">ログアウト</a></li>
         {% endif %}
       </ul>

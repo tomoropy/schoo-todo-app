@@ -1,6 +1,6 @@
 from flask import Blueprint, request, render_template, redirect, url_for, flash
 from flask_login import login_user, login_required, logout_user, current_user
-from flask_todo.models import User #, Task    ←(Task実装時にコメントアウトを外してください)
+from flask_todo.models import User #,Task    #(Task実装時にコメントアウトを外してください)
 from datetime import datetime, date
 from flask_todo import db
 import re
